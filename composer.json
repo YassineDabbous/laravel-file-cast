@@ -1,0 +1,30 @@
+{
+    "version": "0.0.1",
+    "name": "yaseen/laravel-file-cast",
+    "description": "Easily link your uploads with their db columns",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Yassine Dabbous",
+            "email": "yassine.dabbous@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "keywords": ["laravel", "file cast", "file field", "file column", "avatar", "photo column"],
+    "require": {
+        "laravel/framework": "^5.5|^6.0|^7.0|^8.0|^9.0|^10.0|^11.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Yaseen\\FileCast\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Yaseen\\FileCast\\FileCastServiceProvider"
+            ]
+        }
+    }
+}
