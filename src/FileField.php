@@ -9,7 +9,7 @@ class FileCast implements CastsAttributes
 {
     public function __construct(protected ?string $disk = null)
     {
-        $this->disk = $this->disk ?? 'public';
+        $this->disk = config('file-cast.disk', 'public');
     }
 
     public function get($model, string $key, $value, array $attributes)
@@ -30,7 +30,7 @@ class FileCast implements CastsAttributes
                 }
             }
             $value = $value->store(
-                $model?->getTable() ?? 'file_cast_default_path',
+                config('file-cast.folder') ?? $model?->getTable() ?? 'file_cast_default_path',
                 ['disk' => $this->disk]
             );
             return $value;
