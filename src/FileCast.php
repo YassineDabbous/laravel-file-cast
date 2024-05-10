@@ -32,18 +32,24 @@ class FileCast implements CastsAttributes
                     Storage::disk($this->disk)->delete($attributes[$key]);
                 }
             }
-
-            $value = $value->store(
-                config('file-cast.folder') ?? $model?->getTable() ?? 'file_cast_default_path',
-                ['disk' => $this->disk]
-            );
-            return $value;
+            
+            $folder = config('file-cast.folder') ?? $model?->getTable() ?? 'file_cast_default_path';
+            
+            if($value instanceof UploadedFile){
+                $value = $value->store($folder, ['disk' => $this->disk]);
+            }
+            else {
+                $name = collect(explode('/', $value))->last();
+                Storage::disk($this->disk)->put("$folder/$name", file_get_contents($value));
+                $value = "$folder/$name";
+            }
         }
         
         return $value;
     }
 
 
+    /** Get a per-column disk */
     public function getDisk(Model $model, string $key){
         $disks = [];
         if(method_exists($model, 'disks')){
