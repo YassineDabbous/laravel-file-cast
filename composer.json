@@ -1,6 +1,6 @@
 {
     "version": "0.0.1",
-    "name": "yaseen/laravel-file-cast",
+    "name": "yassinedabbous/laravel-file-cast",
     "description": "Easily link your uploads with their db columns",
     "type": "library",
     "authors": [
@@ -17,13 +17,13 @@
     },
     "autoload": {
         "psr-4": {
-            "Yaseen\\FileCast\\": "src/"
+            "YassineDabbous\\FileCast\\": "src/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "Yaseen\\FileCast\\FileCastServiceProvider"
+                "YassineDabbous\\FileCast\\FileCastServiceProvider"
             ]
         }
     }

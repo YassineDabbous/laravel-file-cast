@@ -1,6 +1,6 @@
 <?php
 
-namespace Yaseen\FileCast;
+namespace YassineDabbous\FileCast;
 
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;

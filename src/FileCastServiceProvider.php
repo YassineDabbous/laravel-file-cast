@@ -1,6 +1,6 @@
 <?php
 
-namespace Yaseen\FileCast;
+namespace YassineDabbous\FileCast;
 
 use Illuminate\Support\ServiceProvider;
 
