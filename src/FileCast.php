@@ -23,16 +23,21 @@ class FileCast implements CastsAttributes
      */
     public function set(Model $model, string $key, mixed $value, array $attributes)
     {
+        $this->disk = $this->getDisk($model, $key);
+        
+        // delete old file if exists
+        if(
+            config('file-cast.auto_delete', false)
+            && isset($attributes[$key])
+            && $attributes[$key] != $value
+            && Storage::disk($this->disk)->exists($attributes[$key])
+            // && (!method_exists($model, 'shouldDeleteFile') || $model->shouldDeleteFile($key, $attributes[$key]))
+        ) {
+            Storage::disk($this->disk)->delete($attributes[$key]);
+        }
+
+        // save file to storage disk
         if (is_file($value)) {
-            $this->disk = $this->getDisk($model, $key);
-            
-            // delete old file if exists
-            if (isset($attributes[$key])) {
-                if (Storage::disk($this->disk)->exists($attributes[$key])) {
-                    Storage::disk($this->disk)->delete($attributes[$key]);
-                }
-            }
-            
             $folder = config('file-cast.folder') ?? $model?->getTable() ?? 'file_cast_default_path';
             
             if($value instanceof UploadedFile){
