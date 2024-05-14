@@ -2,12 +2,15 @@
 
 namespace YassineDabbous\FileCast;
 
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Model;
 
 class FileCast implements CastsAttributes
 {
+    public bool $withoutObjectCaching = true;
+
     public function __construct(protected ?string $disk = null)
     {
         $this->disk = config('file-cast.disk', 'public');
@@ -39,7 +42,7 @@ class FileCast implements CastsAttributes
         // save file to storage disk
         if (is_file($value)) {
             $folder = config('file-cast.folder') ?? $model?->getTable() ?? 'file_cast_default_path';
-            
+
             if($value instanceof UploadedFile){
                 $value = $value->store($folder, ['disk' => $this->disk]);
             }
