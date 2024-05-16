@@ -18,6 +18,16 @@ class FileCast implements CastsAttributes
         $this->disk = $disk ?? config('file-cast.disk', 'public');
     }
 
+    
+    /**
+     * Constructor helper for static typing.
+     */
+    public static function using(string $disk)
+    {
+        return static::class.':'.$disk;
+    }
+
+
     public function get(Model $model, string $key, mixed $value, array $attributes)
     {
         return $value;
