@@ -11,9 +11,11 @@ class FileCast implements CastsAttributes
 {
     public bool $withoutObjectCaching = true;
 
-    public function __construct(protected ?string $disk = null)
+    protected ?string $disk = null;
+
+    public function __construct(?string $disk = null)
     {
-        $this->disk = config('file-cast.disk', 'public');
+        $this->disk = $disk ?? config('file-cast.disk', 'public');
     }
 
     public function get(Model $model, string $key, mixed $value, array $attributes)
