@@ -3,6 +3,7 @@
 namespace YassineDabbous\FileCast;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 trait HasFileCast
 {
@@ -10,7 +11,7 @@ trait HasFileCast
         static::deleted(function(Model $model){
             $casts = $model->getCasts();
             foreach ($casts as $key => $value) {
-                if($value === FileCast::class){
+                if(Str::startsWith($value, FileCast::class) ){
                     $model->$key = null;
                 }
             }
