@@ -15,7 +15,7 @@ Easily link your uploads with their db columns
 
     composer require yassinedabbous/laravel-file-cast
     
-###🧑‍💻  Usage
+### 🧑‍💻  Usage
 Just cast any of your table columns with *FileCast::class* like that:
 ```php
 use YassineDabbous\FileCast\FileCast;
@@ -24,16 +24,19 @@ class User extends Model
 {
 	# Laravel<11.x
     protected $casts = [
-        'avatar' => FileCast::class,
+        'avatar' => FileCast::class,        // use default disk
+        'avatar' => FileCast::class.':s3',  // use S3 disk
     ];
 
     # OR
 
-    # Laravel 11.x
+    # Laravel >=11.x
     public function casts(): array
     {
         return [
-            'avatar' => new FileCast(disk: 's3'),
+            'avatar' => FileCast::class,                            // use default disk
+            'avatar' => FileCast::using(disk: 's3'),                // use S3 disk
+            'avatar' => FileCast::using(disk: $this->column_disk),  // use column value as a disk name
         ];
     }
 }
@@ -96,7 +99,7 @@ class Post extends Model
 	/** Set a disk for each column */
     public function disks(): array {
         return [
-            'photo' => $this->column_disk ?? 'public',
+            'photo' => $this->column_disk ?? 'public', // use column value as disk
             'video' => 's3',
         ];
     }
