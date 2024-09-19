@@ -13,25 +13,27 @@ class FileCast implements CastsAttributes
     public bool $withoutObjectCaching = true;
 
     protected ?string $disk = null;
+    protected ?string $default = null;
 
-    public function __construct(?string $disk = null)
+    public function __construct(?string $disk = null, ?string $default = null)
     {
         $this->disk = $disk ?? config('file-cast.disk', 'public');
+        $this->default = $default ?? config('file-cast.default');
     }
 
     
     /**
      * Constructor helper for static typing.
      */
-    public static function using(string $disk)
+    public static function using(?string $disk = null, ?string $default = null)
     {
-        return static::class.':'.$disk;
+        return static::class.':'.implode(',', array_filter([$disk, $default]));
     }
 
 
     public function get(Model $model, string $key, mixed $value, array $attributes)
     {
-        return $value;
+        return $value ?? $this->default;
     }
 
     /**
@@ -40,14 +42,13 @@ class FileCast implements CastsAttributes
     public function set(Model $model, string $key, mixed $value, array $attributes)
     {
         $this->disk = $this->getDisk($model, $key);
-        
+
         // delete old file if exists
         if(
             config('file-cast.auto_delete', false)
             && isset($attributes[$key])
             && $attributes[$key] != $value
             && Storage::disk($this->disk)->exists($attributes[$key])
-            // && (!method_exists($model, 'shouldDeleteFile') || $model->shouldDeleteFile($key, $attributes[$key]))
         ) {
             Storage::disk($this->disk)->delete($attributes[$key]);
         }
@@ -75,7 +76,7 @@ class FileCast implements CastsAttributes
             Storage::disk($this->disk)->put("$folder/$name", base64_decode($data));
             $value = "$folder/$name";
         }
-        
+
         return $value;
     }
 
