@@ -52,20 +52,30 @@ class FileCast implements CastsAttributes
         }
 
         // save file to storage disk
+        $folder = config('file-cast.folder') ?? $model?->getTable() ?? 'file_cast_default_path';
         if (is_file($value)) {
-            $folder = config('file-cast.folder') ?? $model?->getTable() ?? 'file_cast_default_path';
-
             if($value instanceof UploadedFile){
                 $value = $value->store($folder, ['disk' => $this->disk]);
-            }
-            else {
+            } else {
                 $name = collect(explode('/', $value))->last();
                 Storage::disk($this->disk)->put("$folder/$name", file_get_contents($value));
                 $value = "$folder/$name";
             }
         }
+        else if ($this->isBase64Uri($value)) {
+            $ext = explode('/',explode(':',substr($value,0,strpos($value,';')))[1])[1];
+            $data = substr($value, strpos($value, ',') + 1);
+            $name = uniqid() . '.' . $ext;
+            Storage::disk($this->disk)->put("$folder/$name", base64_decode($data));
+            $value = "$folder/$name";
+        }
         
         return $value;
+    }
+
+    
+    public function isBase64Uri($value): bool{
+        return is_string($value) && preg_match('/^data:(\w+)\/(\w+);base64,/', $value);
     }
 
 
