@@ -6,6 +6,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Model;
+use Str;
 
 class FileCast implements CastsAttributes
 {
@@ -61,6 +62,11 @@ class FileCast implements CastsAttributes
                 Storage::disk($this->disk)->put("$folder/$name", file_get_contents($value));
                 $value = "$folder/$name";
             }
+        }
+        else if (Str::isUrl($value)) {
+            $name = collect(explode('/', $value))->last();
+            Storage::disk($this->disk)->put("$folder/$name", file_get_contents($value));
+            $value = "$folder/$name";
         }
         else if ($this->isBase64Uri($value)) {
             $ext = explode('/',explode(':',substr($value,0,strpos($value,';')))[1])[1];
