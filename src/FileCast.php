@@ -85,6 +85,11 @@ class FileCast implements CastsAttributes
             Storage::disk($this->disk)->put("$folder/$name", base64_decode($data));
             $value = "$folder/$name";
         }
+         else if ($this->isJson($value)) {
+             $name = uniqid() . '.json';
+             Storage::disk($this->disk)->put("$folder/$name", $value);
+             $value = "$folder/$name";
+         }
 
         return $value;
     }

@@ -5,6 +5,12 @@ use Symfony\Component\Mime\MimeTypes;
 
 trait FileHelpers{
     
+    protected function isJson($string) {
+        //  json_validate() PHP 8.3
+        json_decode($string);
+        return json_last_error() === JSON_ERROR_NONE;
+     }
+    
     protected function isBase64URI($value): bool{
         return is_string($value) && preg_match('/^data:(\w+)\/(\w+);base64,/', $value);
     }
