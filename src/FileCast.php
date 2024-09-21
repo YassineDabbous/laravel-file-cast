@@ -42,14 +42,14 @@ class FileCast implements CastsAttributes
     
     public function set(Model $model, string $key, mixed $value, array $attributes)
     {
-        /** chnange file path without copying it. */
+        /** Change file path without copying it. */
         if(is_string($value) && str_starts_with($value,'@')) {
             return str_replace('@', '', $value);
         }
         
         $this->disk = $this->getDisk($model, $key);
 
-        // delete old file if exists
+        // Delete old file if exists
         if(
             config()->boolean('file-cast.auto_delete', false)
             && isset($attributes[$key])
@@ -59,7 +59,7 @@ class FileCast implements CastsAttributes
             Storage::disk($this->disk)->delete($attributes[$key]);
         }
 
-        // save file to storage disk
+        // Save file to storage disk
         $folder = config('file-cast.folder') ?? $model?->getTable() ?? 'file_cast_default_path';
         
         if (is_file($value)) {
@@ -85,11 +85,11 @@ class FileCast implements CastsAttributes
             Storage::disk($this->disk)->put("$folder/$name", base64_decode($data));
             $value = "$folder/$name";
         }
-         else if ($this->isJson($value)) {
-             $name = uniqid() . '.json';
-             Storage::disk($this->disk)->put("$folder/$name", $value);
-             $value = "$folder/$name";
-         }
+        else if (Str::isJson($value)) {
+            $name = uniqid() . '.json';
+            Storage::disk($this->disk)->put("$folder/$name", $value);
+            $value = "$folder/$name";
+        }
 
         return $value;
     }
