@@ -47,6 +47,19 @@ class FileField
         return base64_encode(Storage::disk($this->disk)->get( $this->value));
     }
 
+    public function toArray(): ?array{
+        if(str_ends_with($this->value, '.csv')) {
+            $stream = fopen($this->path(), 'r');
+            $rows = [];
+            while (($row = fgetcsv($stream)) !== false) {
+                $rows[] = $row;
+            }
+            fclose($stream);
+            return $rows;
+            // return str_getcsv($this->get(), PHP_EOL);
+        }
+        return Storage::disk($this->disk)->json( $this->value);
+    }
     
     public function delete(): void
     {

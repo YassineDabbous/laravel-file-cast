@@ -22,13 +22,23 @@ trait FileHelpers{
         return true;
     }
     
-    function arrayToCSV(array $input, $delimiter = ',', $enclosure = '"') {
-        $result = '';
-        foreach($input as $value){
-            $result .= implode($delimiter, array_map(fn($v) => "$enclosure$v$enclosure", $value));
-            $result .= "\n";
+    // function arrayToCSV(array $input, $delimiter = ',', $enclosure = '"') {
+    //     $result = '';
+    //     foreach($input as $value){
+    //         $result .= implode($delimiter, array_map(fn($v) => "$enclosure$v$enclosure", $value));
+    //         $result .= "\n";
+    //     }
+    //     return trim($result);
+    // }
+    function arrayToCSV(array $input) {
+        $fp = fopen('php://temp', 'r+b');
+        foreach ($input as $value) {
+            fputcsv($fp, $value);
         }
-        return trim($result);
+        rewind($fp);
+        $data = rtrim(stream_get_contents($fp), "\n");
+        fclose($fp);
+        return $data;
     }
 
 
