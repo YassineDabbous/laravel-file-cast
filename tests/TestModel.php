@@ -7,6 +7,8 @@ use YassineDabbous\FileCast\FileCast;
 use YassineDabbous\FileCast\HasFileCast;
 
 /**
+ * @property null|\YassineDabbous\FileCast\FileField|\Illuminate\Http\Testing\File $avatar
+ * 
  * @author Yassine Dabbous <yassine.dabbous@gmail.com>
  */
 class TestModel extends Model

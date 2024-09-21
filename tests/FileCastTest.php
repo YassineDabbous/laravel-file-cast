@@ -34,7 +34,55 @@ class FileCastTest extends BaseTestCase
         Storage::disk('fake_disk')->assertExists($model->avatar);
     }
 
-    
+    public function test_support_json(): void
+    {
+        Storage::fake('fake_disk');
+        $model = new TestModel();
+        $model->avatar = '{"key1": "value1", "key2": "value2"}';
+
+        Storage::disk('fake_disk')->assertExists($model->avatar);
+        
+        $this->assertStringEndsWith('.json', $model->avatar);
+    }
+
+    public function test_support_array_json(): void
+    {
+        Storage::fake('fake_disk');
+        $model = new TestModel();
+
+        $array = ['key1' => 'value1', 'key2' => 'value2', 'key3' => ['1', '2', '3']];
+
+        $model->avatar = $array;
+
+        Storage::disk('fake_disk')->assertExists($model->avatar);
+        
+        $this->assertStringEndsWith('.json', $model->avatar);
+
+        $this->assertEquals($model->avatar->toArray(), $array);
+    }
+
+
+    public function test_support_array_csv(): void
+    {
+        Storage::fake('fake_disk');
+        $model = new TestModel();
+
+        $array = [
+            ['value1', 'value2', 'value3'],
+            ['value1', 'value2', 'value3'],
+            ['value1', 'value2', 'value3'],
+        ];
+
+        $model->avatar = $array;
+
+        Storage::disk('fake_disk')->assertExists($model->avatar);
+        
+        $this->assertStringEndsWith('.csv', $model->avatar);
+
+        $this->assertEquals($model->avatar->toArray(), $array);
+    }
+
+
     public function test_should_delete_file_when_column_updated(): void
     {
         Storage::fake('fake_disk');
