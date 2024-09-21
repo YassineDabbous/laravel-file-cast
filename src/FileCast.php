@@ -21,10 +21,8 @@ class FileCast implements CastsAttributes
         $this->default = $default ?? config('file-cast.default');
     }
 
-    
-    /**
-     * Constructor helper for static typing.
-     */
+
+    /** Constructor helper for static typing. */
     public static function using(?string $disk = null, ?string $default = null)
     {
         return static::class.':'.implode(',', array_filter([$disk, $default]));
@@ -33,19 +31,18 @@ class FileCast implements CastsAttributes
 
     public function get(Model $model, string $key, mixed $value, array $attributes)
     {
-        return $value ?? $this->default;
+        $this->disk = $this->getDisk($model, $key);
+        return new FileField(value: $value ?? $this->default, model: $model, key: $key,disk: $this->disk);
     }
 
-    /**
-     * @param  \Illuminate\Http\UploadedFile|null  $value
-     */
+    
     public function set(Model $model, string $key, mixed $value, array $attributes)
-    {
+    {        
         $this->disk = $this->getDisk($model, $key);
 
         // delete old file if exists
         if(
-            config('file-cast.auto_delete', false)
+            config()->boolean('file-cast.auto_delete', false)
             && isset($attributes[$key])
             && $attributes[$key] != $value
             && Storage::disk($this->disk)->exists($attributes[$key])
@@ -55,6 +52,7 @@ class FileCast implements CastsAttributes
 
         // save file to storage disk
         $folder = config('file-cast.folder') ?? $model?->getTable() ?? 'file_cast_default_path';
+        
         if (is_file($value)) {
             if($value instanceof UploadedFile){
                 $value = $value->store($folder, ['disk' => $this->disk]);
