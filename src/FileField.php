@@ -39,4 +39,28 @@ class FileField
         return $this->value;
     }
 
+    public function toRaw(): string|null {
+        return Storage::disk($this->disk)->get( $this->value);
+    }
+    
+    public function toBase64(): string{
+        return base64_encode(Storage::disk($this->disk)->get( $this->value));
+    }
+
+    
+    public function delete(): void
+    {
+        $this->model->{$this->key} = null;
+    }
+    
+    public function move($to, bool $persist = true): void
+    {
+        Storage::disk($this->disk)->move($this->value, $to);
+        $this->model::unguard();
+        $this->model->{$this->key} = "@$to";
+        if($persist){
+            $this->model->save();
+        }
+    }
+
 }
