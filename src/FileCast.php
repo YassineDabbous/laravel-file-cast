@@ -62,7 +62,18 @@ class FileCast implements CastsAttributes
         // Save file to storage disk
         $folder = config('file-cast.folder') ?? $model?->getTable() ?? 'file_cast_default_path';
         
-        if (is_file($value)) {
+        if (is_array($value)) {
+            if($this->isMultiListArray($value)){
+                $name = uniqid() . '.csv';
+                $value = $this->arrayToCSV($value);
+            } else {
+                $name = uniqid() . '.json';
+                $value = json_encode($value);
+            }
+            Storage::disk($this->disk)->put("$folder/$name", $value);
+            $value = "$folder/$name";
+        }
+        else if (is_file($value)) {
             if($value instanceof UploadedFile){
                 $value = $value->store($folder, ['disk' => $this->disk]);
             } else {
