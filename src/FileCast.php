@@ -2,14 +2,18 @@
 
 namespace YassineDabbous\FileCast;
 
-use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Database\Eloquent\Model;
-use Str;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use YassineDabbous\FileCast\Helpers\FileHelpers;
 
 class FileCast implements CastsAttributes
 {
+    use FileHelpers;
+
     public bool $withoutObjectCaching = true;
 
     protected ?string $disk = null;
@@ -42,7 +46,7 @@ class FileCast implements CastsAttributes
         if(is_string($value) && str_starts_with($value,'@')) {
             return str_replace('@', '', $value);
         }
-
+        
         $this->disk = $this->getDisk($model, $key);
 
         // delete old file if exists
@@ -68,8 +72,10 @@ class FileCast implements CastsAttributes
             }
         }
         else if (Str::isUrl($value)) {
-            $name = collect(explode('/', $value))->last();
-            Storage::disk($this->disk)->put("$folder/$name", file_get_contents($value));
+            $response = Http::get($value);
+            $response->throw();
+            $name = uniqid() . '.'. $this->guessExtension($response->header('Content-Type'));
+            Storage::disk($this->disk)->put("$folder/$name", $response->body());
             $value = "$folder/$name";
         }
         else if ($this->isBase64Uri($value)) {
@@ -83,10 +89,6 @@ class FileCast implements CastsAttributes
         return $value;
     }
 
-    
-    public function isBase64Uri($value): bool{
-        return is_string($value) && preg_match('/^data:(\w+)\/(\w+);base64,/', $value);
-    }
 
 
     /** Get a per-column disk */
