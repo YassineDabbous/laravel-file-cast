@@ -46,6 +46,11 @@ class FileField
     public function toBase64(): string{
         return base64_encode(Storage::disk($this->disk)->get( $this->value));
     }
+    
+    public function toBase64URI(): string{
+        $mime = mime_content_type($this->path());
+        return "data:$mime;base64,".$this->toBase64();
+    }
 
     public function toArray(): ?array{
         if(str_ends_with($this->value, '.csv')) {
