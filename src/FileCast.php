@@ -42,12 +42,14 @@ class FileCast implements CastsAttributes
     
     public function set(Model $model, string $key, mixed $value, array $attributes)
     {
+        $this->disk = $this->getDisk($model, $key);
+        
         /** Change file path without copying it. */
         if(is_string($value) && str_starts_with($value,'@')) {
-            return str_replace('@', '', $value);
+            $value = str_replace('@', '', $value);
+            Storage::disk($this->disk)->move($attributes[$key], $value);
+            return $value;
         }
-        
-        $this->disk = $this->getDisk($model, $key);
 
         // Delete old file if exists
         if(

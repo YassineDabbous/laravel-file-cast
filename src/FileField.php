@@ -66,15 +66,16 @@ class FileField
         return Storage::disk($this->disk)->json( $this->value);
     }
     
-    public function delete(): void
+    public function delete(bool $persist = FALSE): void
     {
         $this->model->{$this->key} = null;
+        if($persist){
+            $this->model->save();
+        }
     }
     
-    public function move($to, bool $persist = true): void
+    public function move($to, bool $persist = FALSE): void
     {
-        Storage::disk($this->disk)->move($this->value, $to);
-        $this->model::unguard();
         $this->model->{$this->key} = "@$to";
         if($persist){
             $this->model->save();
