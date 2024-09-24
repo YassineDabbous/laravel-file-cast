@@ -8,23 +8,23 @@ Easily link your uploads with their table columns
 
 
 ## Table of Content
-- [Features](#Features)
-- [Installation](#Installation)
-- [Usage](#Usage)
-    - [Supported data formats](#Supported-data-formats)
-        - [Uploaded file](#Uploaded-file)
-        - [Local file path](#Local-file-path)
-        - [Remote file url](#Remote-file-url)
-        - [Base64 URI](#Base64-URI)
-        - [Json string](#Json-string)
-        - [Arrays (Json & CSV)](#Arrays)
-        - [NULL ?](#NULL)
-    - [Functionalities](#Functionalities)
-        - [Storage Proxy](#Storage-Proxy)
-        - [Additional Methods](#Additional-Methods)
-        - [File Manipulation (Move & Delete)](#File-Manipulation)
-        - [Extending](#Extending)
-- [Configuration](#Configuration)
+- [Features](#-features)
+- [Installation](#-installation)
+- [Usage](#--usage)
+    - [Supported data formats](#%EF%B8%8F-supported-data-formats)
+        - [Uploaded file](#-uploaded-file)
+        - [Local file path](#-local-file-path)
+        - [Remote file url](#-remote-file-url)
+        - [Base64 URI](#--base64-uri)
+        - [Json string](#--json-string)
+        - [Arrays (Json & CSV)](#--array-as-json-or-csv)
+        - [NULL ?](#--null-)
+    - [Functionalities](#%EF%B8%8F-functionalities)
+        - [Storage Proxy](#-storage-proxy)
+        - [Additional Methods](#-additional-methods)
+        - [File Manipulation (Move & Delete)](#-file-manipulation)
+        - [Extending](#-extending)
+- [Configuration](#%EF%B8%8F-configuration)
 
 
 
@@ -160,7 +160,7 @@ $model->avatar = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABy
 $model->avatar; // /disk/folder/file.png
 ```
 
-#### •  JSON data:
+#### •  JSON string:
 ```php
 $model->avatar = '{"key1": "value1"}';
 
@@ -320,22 +320,28 @@ $model->photo->resize(500, 500);
 
 
 ## ⚙️ Configuration
+
+You can optionally publish the [config file](src/config.php) with:
+
     php artisan vendor:publish --tag=file-cast-config
+
+
+These are the contents of the default config file that will be published:
 
 ```php
 <?php
 
 return [
-    /** Default file path */
+    /** Default value when no file uploaded. */
     'default' => env('FILE_CAST_DEFAULT'),
 
     /** Default storage disk */
-    'disk' => env('FILE_CAST_DISK', 'public'),
+    'disk' => env('FILE_CAST_DISK'),
 
     /** Default storage folder. If NULL, the Model's table name will be used. */
     'folder' => env('FILE_CAST_FOLDER'),
 
-    /** Automatically clean files on column value changed. */
+    /** Automatically clean files on column value updated. */
     'auto_delete' => env('FILE_CAST_AUTO_DELETE', TRUE),
 ];
 
