@@ -8,8 +8,15 @@ jobs:
       fail-fast: false
       matrix:
           os: ['ubuntu-latest']
-          php: [8.3]
+          php: [8.3, 8.2, 8.1, 8.0]
           laravel: [11.*, 10.*, 9.*]
+          exclude:
+              - laravel: 11.*
+                php: 8.1
+              - laravel: 11.*
+                php: 8.0
+              - laravel: 10.*
+                php: 8.0
           include:
               - laravel: 11.*
                 testbench: 9.*
@@ -28,8 +35,7 @@ jobs:
           coverage: none
 
       - name: Require laravel ${{ matrix.laravel }}
-        run: |
-          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update
+        run: composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update
       
       - name: show composer schema
         run: cat composer.json
