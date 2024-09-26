@@ -17,6 +17,8 @@ class TestModel extends Model
 
     protected $table = 'tests';
 
+    public $timestamps = false;
+
     protected $casts = [
         'avatar' => FileCast::class,
     ];
