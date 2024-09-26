@@ -36,7 +36,10 @@ class FileCast implements CastsAttributes
     public function get(Model $model, string $key, mixed $value, array $attributes)
     {
         $this->disk = $this->getDisk($model, $key);
-        return new FileField(value: $value ?? $this->default, model: $model, key: $key,disk: $this->disk);
+        if(!$v = $value ?? $this->default){
+            return null;
+        }
+        return new FileField(value: $v, model: $model, key: $key,disk: $this->disk);
     }
 
     
