@@ -33,7 +33,7 @@ class FileCast implements CastsAttributes
     }
 
 
-    public function get(Model $model, string $key, mixed $value, array $attributes)
+    public function get($model, string $key, $value, array $attributes)
     {
         $this->disk = $this->getDisk($model, $key);
         if(!$v = $value ?? $this->default){
@@ -43,7 +43,7 @@ class FileCast implements CastsAttributes
     }
 
     
-    public function set(Model $model, string $key, mixed $value, array $attributes)
+    public function set($model, string $key, $value, array $attributes)
     {
         $this->disk = $this->getDisk($model, $key);
         
@@ -56,7 +56,7 @@ class FileCast implements CastsAttributes
 
         // Delete old file if exists
         if(
-            config()->boolean('file-cast.auto_delete', false)
+            config('file-cast.auto_delete', false)
             && isset($attributes[$key])
             && $attributes[$key] != $value
             && Storage::disk($this->disk)->exists($attributes[$key])
@@ -87,7 +87,7 @@ class FileCast implements CastsAttributes
                 $value = "$folder/$name";
             }
         }
-        else if (Str::isUrl($value)) {
+        else if (static::isUrl($value)) {
             $response = Http::get($value);
             $response->throw();
             $name = uniqid() . '.'. $this->guessExtension($response->header('Content-Type'));

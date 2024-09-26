@@ -52,6 +52,18 @@ class FileField
         return "data:$mime;base64,".$this->toBase64();
     }
 
+    public function json($flags = 0): array|null
+    {
+        if(method_exists(\Illuminate\Filesystem\FilesystemAdapter::class, 'json')){
+            // L >= 10.x
+            return Storage::disk($this->disk)->json( $this->value);
+        }
+
+        $content = $this->get();
+
+        return is_null($content) ? null : json_decode($content, true, 512, $flags);
+    }
+
     public function toArray(): ?array{
         if(str_ends_with($this->value, '.csv')) {
             $stream = fopen($this->path(), 'r');
@@ -63,7 +75,7 @@ class FileField
             return $rows;
             // return str_getcsv($this->get(), PHP_EOL);
         }
-        return Storage::disk($this->disk)->json( $this->value);
+        return $this->json();
     }
     
     public function delete(bool $persist = FALSE): void
