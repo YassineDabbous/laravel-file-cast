@@ -12,4 +12,7 @@ return [
 
     /** Automatically clean files on column value updated. */
     'auto_delete' => env('FILE_CAST_AUTO_DELETE', true),
+
+    /** Serialize attribute to full URL. */
+    'serialize_to_full_url' => env('FILE_CAST_SERIALIZE_TO_FULL_URL', true),
 ];

@@ -33,8 +33,9 @@ class FileCast implements CastsAttributes, SerializesCastableAttributes
         return static::class.':'.implode(',', array_filter([$disk, $default]));
     }
 
-    
-    public function serialize(Model $model, string $key, mixed $value, array $attributes){
+
+    public function serialize(Model $model, string $key, mixed $value, array $attributes)
+    {
         return (string) $value;
     }
 

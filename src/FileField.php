@@ -38,7 +38,7 @@ class FileField
 
     public function __toString(): string
     {
-        return $this->value;
+        return config('file-cast.serialize_to_full_url', false) ? $this->url() : $this->value;
     }
 
     public function toRaw(): string|null
