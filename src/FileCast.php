@@ -3,6 +3,7 @@
 namespace YassineDabbous\FileCast;
 
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
+use Illuminate\Contracts\Database\Eloquent\SerializesCastableAttributes;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Http;
@@ -10,7 +11,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use YassineDabbous\FileCast\Helpers\FileHelpers;
 
-class FileCast implements CastsAttributes
+class FileCast implements CastsAttributes, SerializesCastableAttributes
 {
     use FileHelpers;
 
@@ -32,6 +33,10 @@ class FileCast implements CastsAttributes
         return static::class.':'.implode(',', array_filter([$disk, $default]));
     }
 
+    
+    public function serialize(Model $model, string $key, mixed $value, array $attributes){
+        return (string) $value;
+    }
 
     public function get($model, string $key, $value, array $attributes)
     {
