@@ -11,5 +11,5 @@ return [
     'folder' => env('FILE_CAST_FOLDER'),
 
     /** Automatically clean files on column value updated. */
-    'auto_delete' => env('FILE_CAST_AUTO_DELETE', TRUE),
+    'auto_delete' => env('FILE_CAST_AUTO_DELETE', true),
 ];

@@ -5,23 +5,24 @@ namespace YassineDabbous\FileCast\Helpers;
 use Symfony\Component\Mime\MimeTypes;
 use Illuminate\Support\Arr;
 
-trait FileHelpers{
-
-    function isMultiListArray(array $array): bool{
-        if(!count($array)){
+trait FileHelpers
+{
+    public function isMultiListArray(array $array): bool
+    {
+        if (!count($array)) {
             return false;
         }
-        if(Arr::isAssoc($array)){
+        if (Arr::isAssoc($array)) {
             return false;
         }
-        foreach($array as $key => $value){
-            if(!is_array($value) || Arr::isAssoc($value)){
+        foreach ($array as $key => $value) {
+            if (!is_array($value) || Arr::isAssoc($value)) {
                 return false;
             }
         }
         return true;
     }
-    
+
     // function arrayToCSV(array $input, $delimiter = ',', $enclosure = '"') {
     //     $result = '';
     //     foreach($input as $value){
@@ -30,7 +31,8 @@ trait FileHelpers{
     //     }
     //     return trim($result);
     // }
-    function arrayToCSV(array $input) {
+    public function arrayToCSV(array $input)
+    {
         $fp = fopen('php://temp', 'r+b');
         foreach ($input as $value) {
             fputcsv($fp, $value);
@@ -42,7 +44,8 @@ trait FileHelpers{
     }
 
 
-    protected function isBase64URI($value): bool{
+    protected function isBase64URI($value): bool
+    {
         return is_string($value) && preg_match('/^data:(\w+)\/(\w+);base64,/', $value);
     }
 
@@ -52,7 +55,7 @@ trait FileHelpers{
             throw new \LogicException('You cannot guess the extension as the Mime component is not installed. Try running "composer require symfony/mime".');
         }
 
-        if($ext = MimeTypes::getDefault()->getExtensions($mimeType)[0] ?? null){
+        if ($ext = MimeTypes::getDefault()->getExtensions($mimeType)[0] ?? null) {
             return $ext;
         }
         dump('ext not guessed');
@@ -61,7 +64,7 @@ trait FileHelpers{
     }
 
 
-    
+
     // Str::isUrl() For Laravel <= 10
     public static function isUrl($value, array $protocols = [])
     {

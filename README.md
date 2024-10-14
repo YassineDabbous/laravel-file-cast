@@ -8,10 +8,10 @@ Easily link your uploads with their table columns
 
 
 ## Table of Content
-- [Features](#-features)
-- [Installation](#-installation)
-- [Usage](#--usage)
-    - [Supported data formats](#%EF%B8%8F-supported-data-formats)
+- [:sparkles: Features](#sparkles-features)
+- [:small_red_triangle_down: Installation](#small_red_triangle_down-installation)
+- [:technologist: Usage](#technologist-usage)
+    - [:card_file_box: Supported data formats](#card_file_box-supported-data-formats)
         - [Uploaded file](#-uploaded-file)
         - [Local file path](#-local-file-path)
         - [Remote file url](#-remote-file-url)
@@ -19,19 +19,19 @@ Easily link your uploads with their table columns
         - [Json string](#--json-string)
         - [Arrays (Json & CSV)](#--array-as-json-or-csv)
         - [NULL ?](#--null-)
-    - [Functionalities](#%EF%B8%8F-functionalities)
+    - [:hammer_and_wrench: Functionalities](#hammer_and_wrench-functionalities)
         - [Storage Proxy](#-storage-proxy)
         - [Additional Methods](#-additional-methods)
         - [File Manipulation (Move & Delete)](#-file-manipulation)
         - [Extending](#-extending)
-- [Configuration](#%EF%B8%8F-configuration)
+- [:gear: Configuration](#gear-configuration)
 
 
 
 <br>
 
 
-## ✨ Features 
+## :sparkles: Features 
 
 - Mapping uploaded files from the **Request** to the **Model** with ease.
 - Dealing with **multiple forms of data** (File instance, Local path, Remote url, Base64 URI, Array values ...).
@@ -46,7 +46,7 @@ Easily link your uploads with their table columns
 
 <br>
 
-## 🔻 Installation
+## :small_red_triangle_down: Installation
 
     composer require yassinedabbous/laravel-file-cast
     
@@ -61,7 +61,7 @@ Easily link your uploads with their table columns
 
 <br>
     
-## 🧑‍💻  Usage
+## :technologist: Usage
 
 Just cast any of your table columns with *FileCast::class* like that:
 ```php
@@ -122,7 +122,7 @@ class Post extends Model
 
 <br>
 
-### 🗃️ Supported data formats
+### :card_file_box: Supported data formats
 
 #### • Uploaded file:
 Assuming your request form has a file/image named *"avatar"*, you can assign the file to it's column:
@@ -197,7 +197,7 @@ It has never been easier!
 <br>
 
 
-### 🛠️ Functionalities:
+### :hammer_and_wrench: Functionalities:
 To provide more functionalities to file caster, this package uses a wrapper class name FileField, this class works as a proxy to the Storage facade with some additional methods.
 
 
@@ -319,7 +319,7 @@ $model->photo->resize(500, 500);
 
 
 
-## ⚙️ Configuration
+## :gear: Configuration
 
 You can optionally publish the [config file](src/config.php) with:
 

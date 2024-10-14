@@ -14,10 +14,11 @@ class FileField
 
     public function __construct(
         protected string $value,
-        protected Model $model, 
+        protected Model $model,
         protected string $key,
         protected ?string $disk = null,
-    ){}
+    ) {
+    }
 
 
     public function __call($method, $parameters)
@@ -35,28 +36,32 @@ class FileField
     }
 
 
-    public function __toString(): string{
+    public function __toString(): string
+    {
         return $this->value;
     }
 
-    public function toRaw(): string|null {
-        return Storage::disk($this->disk)->get( $this->value);
+    public function toRaw(): string|null
+    {
+        return Storage::disk($this->disk)->get($this->value);
     }
-    
-    public function toBase64(): string{
-        return base64_encode(Storage::disk($this->disk)->get( $this->value));
+
+    public function toBase64(): string
+    {
+        return base64_encode(Storage::disk($this->disk)->get($this->value));
     }
-    
-    public function toBase64URI(): string{
+
+    public function toBase64URI(): string
+    {
         $mime = mime_content_type($this->path());
         return "data:$mime;base64,".$this->toBase64();
     }
 
     public function json($flags = 0): array|null
     {
-        if(method_exists(\Illuminate\Filesystem\FilesystemAdapter::class, 'json')){
+        if (method_exists(\Illuminate\Filesystem\FilesystemAdapter::class, 'json')) {
             // L >= 10.x
-            return Storage::disk($this->disk)->json( $this->value);
+            return Storage::disk($this->disk)->json($this->value);
         }
 
         $content = $this->get();
@@ -64,8 +69,9 @@ class FileField
         return is_null($content) ? null : json_decode($content, true, 512, $flags);
     }
 
-    public function toArray(): ?array{
-        if(str_ends_with($this->value, '.csv')) {
+    public function toArray(): ?array
+    {
+        if (str_ends_with($this->value, '.csv')) {
             $stream = fopen($this->path(), 'r');
             $rows = [];
             while (($row = fgetcsv($stream)) !== false) {
@@ -77,19 +83,19 @@ class FileField
         }
         return $this->json();
     }
-    
-    public function delete(bool $persist = FALSE): void
+
+    public function delete(bool $persist = false): void
     {
         $this->model->{$this->key} = null;
-        if($persist){
+        if ($persist) {
             $this->model->save();
         }
     }
-    
-    public function move($to, bool $persist = FALSE): void
+
+    public function move($to, bool $persist = false): void
     {
         $this->model->{$this->key} = "@$to";
-        if($persist){
+        if ($persist) {
             $this->model->save();
         }
     }

@@ -36,26 +36,26 @@ class FileCast implements CastsAttributes
     public function get($model, string $key, $value, array $attributes)
     {
         $this->disk = $this->getDisk($model, $key);
-        if(!$v = $value ?? $this->default){
+        if (!$v = $value ?? $this->default) {
             return null;
         }
-        return new FileField(value: $v, model: $model, key: $key,disk: $this->disk);
+        return new FileField(value: $v, model: $model, key: $key, disk: $this->disk);
     }
 
-    
+
     public function set($model, string $key, $value, array $attributes)
     {
         $this->disk = $this->getDisk($model, $key);
-        
+
         /** Change file path without copying it. */
-        if(is_string($value) && str_starts_with($value,'@')) {
+        if (is_string($value) && str_starts_with($value, '@')) {
             $value = str_replace('@', '', $value);
             Storage::disk($this->disk)->move($attributes[$key], $value);
             return $value;
         }
 
         // Delete old file if exists
-        if(
+        if (
             config('file-cast.auto_delete', false)
             && isset($attributes[$key])
             && $attributes[$key] != $value
@@ -66,9 +66,9 @@ class FileCast implements CastsAttributes
 
         // Save file to storage disk
         $folder = config('file-cast.folder') ?? $model?->getTable() ?? 'file_cast_default_path';
-        
+
         if (is_array($value)) {
-            if($this->isMultiListArray($value)){
+            if ($this->isMultiListArray($value)) {
                 $name = uniqid() . '.csv';
                 $value = $this->arrayToCSV($value);
             } else {
@@ -77,31 +77,27 @@ class FileCast implements CastsAttributes
             }
             Storage::disk($this->disk)->put("$folder/$name", $value);
             $value = "$folder/$name";
-        }
-        else if (is_file($value)) {
-            if($value instanceof UploadedFile){
+        } elseif (is_file($value)) {
+            if ($value instanceof UploadedFile) {
                 $value = $value->store($folder, ['disk' => $this->disk]);
             } else {
                 $name = collect(explode('/', $value))->last();
                 Storage::disk($this->disk)->put("$folder/$name", file_get_contents($value));
                 $value = "$folder/$name";
             }
-        }
-        else if (static::isUrl($value)) {
+        } elseif (static::isUrl($value)) {
             $response = Http::get($value);
             $response->throw();
             $name = uniqid() . '.'. $this->guessExtension($response->header('Content-Type'));
             Storage::disk($this->disk)->put("$folder/$name", $response->body());
             $value = "$folder/$name";
-        }
-        else if ($this->isBase64Uri($value)) {
-            $ext = explode('/',explode(':',substr($value,0,strpos($value,';')))[1])[1];
+        } elseif ($this->isBase64Uri($value)) {
+            $ext = explode('/', explode(':', substr($value, 0, strpos($value, ';')))[1])[1];
             $data = substr($value, strpos($value, ',') + 1);
             $name = uniqid() . '.' . $ext;
             Storage::disk($this->disk)->put("$folder/$name", base64_decode($data));
             $value = "$folder/$name";
-        }
-        else if (Str::isJson($value)) {
+        } elseif (Str::isJson($value)) {
             $name = uniqid() . '.json';
             Storage::disk($this->disk)->put("$folder/$name", $value);
             $value = "$folder/$name";
@@ -113,16 +109,16 @@ class FileCast implements CastsAttributes
 
 
     /** Get a per-column disk */
-    public function getDisk(Model $model, string $key){
+    public function getDisk(Model $model, string $key)
+    {
         $disks = [];
-        if(method_exists($model, 'disks')){
+        if (method_exists($model, 'disks')) {
             $disks = $model->disks();
-        }
-        else if(property_exists($model, 'disks')){
+        } elseif (property_exists($model, 'disks')) {
             $disks = $model->disks;
         }
 
-        if(isset($disks[$key])){
+        if (isset($disks[$key])) {
             return $disks[$key];
         }
 
