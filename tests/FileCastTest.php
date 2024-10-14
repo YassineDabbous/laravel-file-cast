@@ -22,7 +22,7 @@ class FileCastTest extends BaseTestCase
     {
         Storage::fake('fake_disk');
         $model = new TestModel();
-        $model->avatar = 'https://via.placeholder.com/150/FF0000/FFFFFF';
+        $model->avatar = 'https://raw.githubusercontent.com/YassineDabbous/laravel-file-cast/refs/heads/main/art/file-cast-logo.jpg';
 
         Storage::disk('fake_disk')->assertExists($model->avatar);
     }
