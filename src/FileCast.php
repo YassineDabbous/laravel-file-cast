@@ -34,7 +34,7 @@ class FileCast implements CastsAttributes, SerializesCastableAttributes
     }
 
 
-    public function serialize(Model $model, string $key, mixed $value, array $attributes)
+    public function serialize($model, string $key, $value, array $attributes)
     {
         return (string) $value;
     }
